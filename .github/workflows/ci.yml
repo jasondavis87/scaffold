@@ -35,6 +35,7 @@ jobs:
         with:
           bun-version: "1.3.9"
       - run: bun install --frozen-lockfile
+      - run: bunx --bun convex codegen --project packages/backend
       - run: bun run typecheck
 
   test:

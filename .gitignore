@@ -17,9 +17,6 @@ dist/
 # typescript
 *.tsbuildinfo
 
-# convex
-_generated/
-
 # os
 .DS_Store
 
