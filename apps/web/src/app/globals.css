@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "@packages/ui/styles/globals.css";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+}

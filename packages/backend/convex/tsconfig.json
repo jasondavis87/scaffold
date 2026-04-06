@@ -1,0 +1,14 @@
+{
+  "extends": "@packages/typescript-config/base.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "moduleResolution": "Bundler",
+    "declaration": false,
+    "declarationMap": false,
+    "paths": {
+      "convex/_generated/*": ["./_generated/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["_generated"]
+}

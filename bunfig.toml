@@ -1,0 +1,5 @@
+[install]
+# Use hoisted (flat) node_modules layout.
+# Bun's default "isolated" linker creates a .bun/ content-addressed store
+# that breaks Metro bundler and Turbopack CSS resolution.
+linker = "hoisted"

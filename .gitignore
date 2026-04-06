@@ -1,0 +1,37 @@
+# dependencies
+node_modules/
+
+# builds
+.next/
+dist/
+.expo/
+.cache/
+
+# turbo
+.turbo/
+
+# env
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+
+# convex
+_generated/
+
+# os
+.DS_Store
+
+# v0 bundles
+v0-*.zip
+
+# mobile builds
+*.ipa
+*.aab
+*.apk
+*.tar.gz
+
+# agents
+.agents/
+

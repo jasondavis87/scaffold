@@ -1,0 +1,40 @@
+{
+  "name": "@packages/monorepo",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*", "tooling/*"],
+  "packageManager": "bun@1.3.9",
+  "scripts": {
+    "preinstall": "bunx only-allow bun",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check": "turbo typecheck lint format check-imports",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "format:fix": "turbo format -- --write",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo run clean",
+    "ios": "cd apps/mobile && bun run ios",
+    "android": "cd apps/mobile && bun run android",
+    "test": "turbo test",
+    "ui-add": "turbo run ui-add",
+    "v0-bundle": "bash scripts/create-v0-bundle.sh"
+  },
+  "prettier": "@packages/prettier-config",
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@packages/prettier-config": "workspace:*",
+    "prettier": "3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "turbo": "2.8.20"
+  },
+  "overrides": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-native": "0.83.2",
+    "typescript": "5.9.3",
+    "convex": "1.34.0",
+    "zod": "4.3.6",
+    "eslint": "9.39.4"
+  }
+}

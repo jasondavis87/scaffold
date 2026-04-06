@@ -1,0 +1,3 @@
+/* Deprecated — use tokens.css instead.
+   This file is kept for backwards compatibility during the transition. */
+@import "./tokens.css";
