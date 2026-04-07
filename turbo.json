@@ -16,6 +16,11 @@
     },
     "format": {
       "dependsOn": ["^topo"],
+      "cache": false,
+      "outputs": []
+    },
+    "format:check": {
+      "dependsOn": ["^topo"],
       "outputs": []
     },
     "lint": {

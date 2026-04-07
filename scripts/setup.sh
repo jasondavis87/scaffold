@@ -23,6 +23,9 @@ if [ -z "$PROJECT_DESCRIPTION" ]; then
   PROJECT_DESCRIPTION="A ${PROJECT_NAME} application"
 fi
 
+# 2b. Project URL (optional)
+read -p "Project URL/domain (optional, e.g. myapp.com): " PROJECT_URL
+
 # 3. Include mobile app?
 read -p "Include mobile app (Expo)? (y/n) [y]: " INCLUDE_MOBILE
 INCLUDE_MOBILE=${INCLUDE_MOBILE:-y}
@@ -45,9 +48,6 @@ BUNDLE_ID="com.${PROJECT_NAME}.app"
 
 FIND_ARGS='-type f \( -name "*.json" -o -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.mjs" -o -name "*.md" -o -name "*.css" -o -name "*.yml" \) -not -path "*/node_modules/*" -not -path "*/.git/*" -not -path "*/_generated/*" -not -path "*/.agents/*"'
 
-# Replace @packages/ scope
-eval "find . $FIND_ARGS -exec sed -i '' 's/@packages\//@${PROJECT_NAME}\//g' {} +"
-
 # Replace default project name
 eval "find . $FIND_ARGS -exec sed -i '' 's/\"scaffold\"/\"${PROJECT_NAME}\"/g' {} +"
 
@@ -62,6 +62,19 @@ sed -i '' "s/\"scheme\": \"scaffold\"/\"scheme\": \"${SCHEME}\"/" apps/mobile/ap
 
 # Replace in EAS build output paths
 sed -i '' "s/dist\/scaffold/dist\/${PROJECT_NAME}/g" apps/mobile/package.json 2>/dev/null || true
+
+# Update TASK-PROMPT.md placeholders
+if [ -f "instructions/TASK-PROMPT.md" ]; then
+  sed -i '' "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" instructions/TASK-PROMPT.md
+  if [ -n "$PROJECT_URL" ]; then
+    sed -i '' "s/{{PROJECT_URL}}/ (${PROJECT_URL})/g" instructions/TASK-PROMPT.md
+  else
+    sed -i '' "s/{{PROJECT_URL}}//g" instructions/TASK-PROMPT.md
+  fi
+  sed -i '' "s/{{PROJECT_DESCRIPTION}}/${PROJECT_DESCRIPTION}/g" instructions/TASK-PROMPT.md
+  PROJECT_ROOT=$(pwd)
+  sed -i '' "s|{{PROJECT_ROOT}}|${PROJECT_ROOT}|g" instructions/TASK-PROMPT.md
+fi
 
 # Remove mobile app if not included
 if [ "$INCLUDE_MOBILE" != "y" ] && [ "$INCLUDE_MOBILE" != "Y" ]; then
@@ -118,13 +131,25 @@ if [ -d "apps/mobile" ]; then
   bun install
 fi
 
+# Remove template origin to prevent accidental pushes
+if git remote | grep -q origin; then
+  git remote remove origin
+  echo "Removed template 'origin' remote."
+fi
+
+# Optionally set new remote
+read -p "Git remote URL (optional, press Enter to skip): " GIT_REMOTE
+if [ -n "$GIT_REMOTE" ]; then
+  git remote add origin "$GIT_REMOTE"
+  echo "Set origin to $GIT_REMOTE"
+fi
+
 echo ""
 echo "✅ Done! Next steps:"
 echo ""
 echo "  1. Set up Convex: cd packages/backend && bunx convex dev"
 echo "  2. Copy .env.example → .env.local in each app"
-echo "  3. Write your PRD: instructions/PRD-TEMPLATE.md"
-echo "  4. Save to .taskmaster/docs/prd.txt"
-echo "  5. Parse: tm parse .taskmaster/docs/prd.txt"
-echo "  6. Build: tm next"
+echo "  3. Write your PRD and save to .taskmaster/docs/prd.txt"
+echo "  4. Parse: tm parse-prd --input=.taskmaster/docs/prd.txt"
+echo "  5. Build: tm next"
 echo ""

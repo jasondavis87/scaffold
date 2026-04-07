@@ -45,7 +45,7 @@ bun dev --filter=landing # Start only landing site (port 3000)
 bun dev --filter=web     # Start only web app (port 3001)
 bun ios                  # Start Expo on iOS simulator
 bun android              # Start Expo on Android emulator
-bun check                # Run typecheck + lint + format + check-imports
+bun check                # Run typecheck + lint + format (auto-fix) + check-imports
 bun test                 # Run Convex tests (vitest)
 bun run ui-add           # Add shadcn component to packages/ui
 bun run v0-bundle -- landing  # Generate V0 design bundle
@@ -61,7 +61,7 @@ bun run v0-bundle -- landing  # Generate V0 design bundle
 6. **Validate with Zod** — all external data (API responses, form inputs) validated with Zod schemas from `@packages/shared`.
 7. **Zustand store is the ONLY interface to AsyncStorage** — components never call AsyncStorage or SecureStore directly. Use `usePreferencesStore`.
 8. **Work on ONE app at a time** — use `git worktree` for parallelism across apps in separate AI sessions.
-9. **PRD is the single source of truth** — tasks reference the PRD, don't duplicate spec content.
+9. **PRD is the single source of truth** — tasks reference the PRD, don't duplicate spec content. If a decision deviates from the PRD, record it in `instructions/DECISIONS.md`. Entries there supersede the PRD.
 
 ## Do NOT
 
@@ -76,6 +76,7 @@ bun run v0-bundle -- landing  # Generate V0 design bundle
 ## Source of Truth
 
 - **PRD**: `.taskmaster/docs/prd.txt`
+- **Decisions**: `instructions/DECISIONS.md` — deviations from the PRD; entries here supersede the PRD
 - **Tasks**: `.taskmaster/tasks/`
 - **Design tokens**: `packages/shared/global.css` (web) and `apps/mobile/src/global.css` (mobile)
 

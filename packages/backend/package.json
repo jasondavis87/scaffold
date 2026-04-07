@@ -10,7 +10,8 @@
     "test:watch": "vitest",
     "typecheck": "if [ -d convex/_generated ]; then tsc --noEmit -p convex/tsconfig.json; else echo 'Skipping typecheck: run bunx convex dev to generate types first'; fi",
     "lint": "eslint convex/ --ignore-pattern '_generated/'",
-    "format": "prettier --check \"convex/**/*.{ts,tsx}\" --ignore-path ../../.prettierignore"
+    "format": "prettier --write \"convex/**/*.{ts,tsx}\" --ignore-path ../../.prettierignore",
+    "format:check": "prettier --check \"convex/**/*.{ts,tsx}\" --ignore-path ../../.prettierignore"
   },
   "dependencies": {
     "convex": "^1.34.0"

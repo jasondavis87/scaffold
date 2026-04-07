@@ -10,7 +10,7 @@ Built for developers who use **Claude Code**, **TaskMaster AI**, **Convex**, **E
 
 2. **Clone & customize** — Clone this template, run `scripts/setup.sh` to name the project and toggle features (mobile, web dashboard, auth).
 
-3. **Write the PRD** — Use `instructions/PRD-TEMPLATE.md` to write a detailed product requirements document. Save to `.taskmaster/docs/prd.txt`.
+3. **Write the PRD** — Write a detailed product requirements document and save to `.taskmaster/docs/prd.txt`.
 
 4. **Generate tasks** — Run `tm parse .taskmaster/docs/prd.txt` to have TaskMaster break the PRD into actionable tasks.
 
@@ -82,7 +82,7 @@ bun dev
 ```bash
 bun install              # Install dependencies
 bun dev                  # Start all dev servers
-bun check                # Typecheck + lint + format
+bun check                # Typecheck + lint + format (auto-fix)
 bun test                 # Run Convex tests
 bun ios                  # Start iOS simulator
 bun android              # Start Android emulator

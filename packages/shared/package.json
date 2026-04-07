@@ -15,7 +15,8 @@
     "./tokens.css": "./tokens.css"
   },
   "scripts": {
-    "format": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"
   },

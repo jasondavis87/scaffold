@@ -11,7 +11,7 @@
     "typecheck": "turbo typecheck",
     "lint": "turbo lint",
     "format": "turbo format",
-    "format:fix": "turbo format -- --write",
+    "format:check": "turbo format:check",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "ios": "cd apps/mobile && bun run ios",
@@ -31,7 +31,7 @@
   "overrides": {
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-native": "0.83.2",
+    "react-native": "0.83.4",
     "typescript": "5.9.3",
     "convex": "1.34.0",
     "zod": "4.3.6",

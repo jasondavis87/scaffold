@@ -24,6 +24,7 @@ export default tseslint.config(
       ".next/**",
       ".expo/**",
       "_generated/**",
+      "**/convex/_generated/**",
       ".turbo/**",
     ],
   },
