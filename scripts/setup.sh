@@ -92,12 +92,6 @@ if [ "$INCLUDE_WEB" != "y" ] && [ "$INCLUDE_WEB" != "Y" ]; then
   rm -rf apps/web
 fi
 
-# Add Clerk auth if requested
-if [ "$INCLUDE_AUTH" = "y" ] || [ "$INCLUDE_AUTH" = "Y" ]; then
-  echo "Auth (Clerk) flag noted — add @clerk/nextjs and @clerk/clerk-expo manually."
-  echo "See Clerk docs for provider setup."
-fi
-
 # Install dependencies
 echo ""
 echo "Installing dependencies..."
@@ -131,6 +125,146 @@ if [ -d "apps/mobile" ]; then
   bun install
 fi
 
+# ──────────────────────────────────────────────
+# Convex setup
+# ──────────────────────────────────────────────
+echo ""
+read -p "Set up Convex now? (y/n) [y]: " SETUP_CONVEX
+SETUP_CONVEX=${SETUP_CONVEX:-y}
+
+CONVEX_URL=""
+if [ "$SETUP_CONVEX" = "y" ] || [ "$SETUP_CONVEX" = "Y" ]; then
+  echo ""
+  echo "Setting up Convex (this may open a browser for login)..."
+  cd packages/backend
+  bunx convex dev --once
+  CONVEX_URL=$(bunx convex url 2>/dev/null || true)
+  cd ../..
+
+  if [ -n "$CONVEX_URL" ]; then
+    echo ""
+    echo "Convex URL: $CONVEX_URL"
+
+    # Write .env.local for each app that exists
+    if [ -d "apps/web" ]; then
+      echo "NEXT_PUBLIC_CONVEX_URL=$CONVEX_URL" > apps/web/.env.local
+    fi
+    if [ -d "apps/landing" ]; then
+      echo "NEXT_PUBLIC_CONVEX_URL=$CONVEX_URL" > apps/landing/.env.local
+    fi
+    if [ -d "apps/mobile" ]; then
+      echo "EXPO_PUBLIC_CONVEX_URL=$CONVEX_URL" > apps/mobile/.env.local
+    fi
+
+    echo "Wrote .env.local files with Convex URL for all apps."
+  else
+    echo "Warning: Could not determine Convex URL. You'll need to set it manually."
+    echo "  Run: cd packages/backend && bunx convex url"
+  fi
+else
+  echo "Skipping Convex setup. To set up later:"
+  echo "  cd packages/backend && bunx convex dev"
+  echo "  Then copy the CONVEX_URL into .env.local for each app (see .env.example files)"
+fi
+
+# ──────────────────────────────────────────────
+# Clerk auth setup
+# ──────────────────────────────────────────────
+if [ "$INCLUDE_AUTH" = "y" ] || [ "$INCLUDE_AUTH" = "Y" ]; then
+  echo ""
+  echo "── Clerk Auth ──"
+  echo ""
+  echo "You'll need a Clerk application. If you don't have one yet:"
+  echo "  1. Go to https://dashboard.clerk.com"
+  echo "  2. Create an application"
+  echo "  3. Go to API Keys to find your Publishable Key and Secret Key"
+  echo "  4. Go to JWT Templates if you need the issuer domain for Convex"
+  echo ""
+  echo "Docs: https://clerk.com/docs/quickstarts/nextjs"
+  echo "      https://clerk.com/docs/quickstarts/expo"
+  echo "      https://docs.convex.dev/auth/clerk"
+  echo ""
+
+  read -p "Enter Clerk keys now? (y/n) [n]: " ENTER_CLERK_KEYS
+  ENTER_CLERK_KEYS=${ENTER_CLERK_KEYS:-n}
+
+  CLERK_PK=""
+  CLERK_SK=""
+  CLERK_ISSUER=""
+
+  if [ "$ENTER_CLERK_KEYS" = "y" ] || [ "$ENTER_CLERK_KEYS" = "Y" ]; then
+    read -p "Clerk Publishable Key (pk_test_... or pk_live_...): " CLERK_PK
+    read -p "Clerk Secret Key (sk_test_... or sk_live_...): " CLERK_SK
+    read -p "Clerk JWT Issuer Domain (e.g. https://your-app.clerk.accounts.dev, optional): " CLERK_ISSUER
+  fi
+
+  # Write Clerk vars into existing .env.local files (or create them)
+  if [ -d "apps/web" ]; then
+    if [ -n "$CLERK_PK" ]; then
+      echo "" >> apps/web/.env.local
+      echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PK" >> apps/web/.env.local
+    else
+      echo "" >> apps/web/.env.local
+      echo "# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=" >> apps/web/.env.local
+    fi
+    if [ -n "$CLERK_SK" ]; then
+      echo "CLERK_SECRET_KEY=$CLERK_SK" >> apps/web/.env.local
+    else
+      echo "# CLERK_SECRET_KEY=" >> apps/web/.env.local
+    fi
+  fi
+
+  if [ -d "apps/landing" ]; then
+    if [ -n "$CLERK_PK" ]; then
+      echo "" >> apps/landing/.env.local
+      echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PK" >> apps/landing/.env.local
+    else
+      echo "" >> apps/landing/.env.local
+      echo "# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=" >> apps/landing/.env.local
+    fi
+  fi
+
+  if [ -d "apps/mobile" ]; then
+    if [ -n "$CLERK_PK" ]; then
+      echo "" >> apps/mobile/.env.local
+      echo "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PK" >> apps/mobile/.env.local
+    else
+      echo "" >> apps/mobile/.env.local
+      echo "# EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=" >> apps/mobile/.env.local
+    fi
+  fi
+
+  if [ -n "$CLERK_SK" ] || [ -n "$CLERK_ISSUER" ]; then
+    echo "" >> packages/backend/.env.local
+    if [ -n "$CLERK_SK" ]; then
+      echo "CLERK_SECRET_KEY=$CLERK_SK" >> packages/backend/.env.local
+    else
+      echo "# CLERK_SECRET_KEY=" >> packages/backend/.env.local
+    fi
+    if [ -n "$CLERK_ISSUER" ]; then
+      echo "CLERK_JWT_ISSUER_DOMAIN=$CLERK_ISSUER" >> packages/backend/.env.local
+    else
+      echo "# CLERK_JWT_ISSUER_DOMAIN=" >> packages/backend/.env.local
+    fi
+  fi
+
+  if [ -n "$CLERK_PK" ]; then
+    echo "Wrote Clerk keys to .env.local files."
+  else
+    echo "Clerk placeholders added to .env.local files. Fill them in when ready."
+  fi
+
+  echo ""
+  echo "Next: install Clerk packages and set up providers."
+  echo "  Web:    bun add @clerk/nextjs --filter=web"
+  echo "  Mobile: bun add @clerk/clerk-expo --filter=mobile"
+  echo "  Convex: https://docs.convex.dev/auth/clerk"
+fi
+
+# ──────────────────────────────────────────────
+# Git remote
+# ──────────────────────────────────────────────
+
 # Remove template origin to prevent accidental pushes
 if git remote | grep -q origin; then
   git remote remove origin
@@ -147,9 +281,16 @@ fi
 echo ""
 echo "✅ Done! Next steps:"
 echo ""
-echo "  1. Set up Convex: cd packages/backend && bunx convex dev"
-echo "  2. Copy .env.example → .env.local in each app"
-echo "  3. Write your PRD and save to .taskmaster/docs/prd.txt"
-echo "  4. Parse: tm parse-prd --input=.taskmaster/docs/prd.txt"
-echo "  5. Build: tm next"
+if [ -z "$CONVEX_URL" ]; then
+  echo "  1. Set up Convex: cd packages/backend && bunx convex dev"
+  echo "  2. Copy the Convex URL into .env.local for each app"
+  STEP=3
+else
+  STEP=1
+fi
+echo "  ${STEP}. Write your PRD and save to .taskmaster/docs/prd.txt"
+STEP=$((STEP + 1))
+echo "  ${STEP}. Parse: tm parse-prd --input=.taskmaster/docs/prd.txt"
+STEP=$((STEP + 1))
+echo "  ${STEP}. Build: tm next"
 echo ""
