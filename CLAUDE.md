@@ -46,7 +46,7 @@ bun dev --filter=web     # Start only web app (port 3001)
 bun ios                  # Start Expo on iOS simulator
 bun android              # Start Expo on Android emulator
 bun check                # Run typecheck + lint + format (auto-fix) + check-imports
-bun test                 # Run Convex tests (vitest)
+bun run test             # Run Convex tests (vitest) — MUST use `bun run test`, not `bun test`
 bun run ui-add           # Add shadcn component to packages/ui
 bun run v0-bundle -- landing  # Generate V0 design bundle
 ```
@@ -65,6 +65,7 @@ bun run v0-bundle -- landing  # Generate V0 design bundle
 
 ## Do NOT
 
+- Run `bun test` — it invokes Bun's built-in test runner, which does not support Vitest. Always use `bun run test` instead.
 - Use `npm`, `yarn`, or `pnpm`
 - Create Next.js API routes for data operations (use Convex)
 - Import from `react-native` directly in mobile app code (except in `src/components/ui/` and `src/lib/react-native.tsx`)
