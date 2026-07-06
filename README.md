@@ -25,7 +25,7 @@ Built for developers who use **Claude Code**, **TaskMaster AI**, **Convex**, **E
 
 | Layer | Technology |
 |-------|-----------|
-| Mobile | Expo SDK 55, expo-router, UniWind, React Native Reusables |
+| Mobile | Expo SDK 57, expo-router, UniWind, React Native Reusables |
 | Web | Next.js 16, Tailwind CSS v4, shadcn/ui (Base UI) |
 | Backend | Convex |
 | Package Manager | Bun |
@@ -38,7 +38,7 @@ Built for developers who use **Claude Code**, **TaskMaster AI**, **Convex**, **E
 
 ```
 ├── apps/
-│   ├── mobile/         # Expo SDK 55 + expo-router + UniWind
+│   ├── mobile/         # Expo SDK 57 + expo-router + UniWind
 │   ├── landing/        # Next.js marketing/landing site
 │   └── web/            # Next.js web app (dashboard)
 ├── packages/
@@ -61,6 +61,8 @@ cd my-app
 # Setup (renames packages, toggles features)
 bash scripts/setup.sh
 
+# After setup, the generated project has fresh git history and starts on develop
+
 # Start Convex
 cd packages/backend && bunx convex dev
 
@@ -73,22 +75,43 @@ bun dev
 - **One app at a time** per AI session — use `git worktree` for parallelism
 - **PRD is the single source of truth** — tasks reference it, don't duplicate it
 - **Convex is the only backend** — no Next.js API routes for data operations
+- **PostHog events are typed in `@packages/shared/analytics`** — apps initialize their own SDK providers and no-op when keys are missing
 - **UniWind `className` for all mobile styling** — `style` prop only for animated values
 - **Zustand store is the only interface to device storage** — never call AsyncStorage directly
 - **Shared UI package is web-only** — mobile components live in `apps/mobile/src/components/ui/`
+- **Branch flow is feature branches -> develop -> main** — develop is integration, main is production
 
 ## Commands
 
 ```bash
 bun install              # Install dependencies
 bun dev                  # Start all dev servers
-bun check                # Typecheck + lint + format (auto-fix)
-bun test                 # Run Convex tests
+bun check                # Typecheck + lint + format (auto-fix) + import checks
+bun run test             # Run Convex tests
+bun run convex:ai:update # Refresh Convex AI guidelines/skills
 bun ios                  # Start iOS simulator
 bun android              # Start Android emulator
 bun run ui-add           # Add shadcn component (web)
 bun run v0-bundle -- web # Generate V0 bundle
 ```
+
+## Analytics
+
+PostHog is wired for landing, web, and mobile with shared event names and property types in `@packages/shared/analytics`.
+
+Set these when you want telemetry enabled:
+
+```bash
+# apps/web and apps/landing
+NEXT_PUBLIC_POSTHOG_KEY=
+NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+
+# apps/mobile
+EXPO_PUBLIC_POSTHOG_KEY=
+EXPO_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+```
+
+Without keys, analytics providers render normally and tracking calls are no-ops.
 
 ## Inspiration
 

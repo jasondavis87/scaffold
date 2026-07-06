@@ -7,6 +7,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./analytics": "./src/analytics.ts",
     "./types": "./src/types/index.ts",
     "./constants": "./src/constants/index.ts",
     "./schemas": "./src/schemas/index.ts",
@@ -21,14 +22,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@packages/eslint-config": "workspace:*",
     "@packages/prettier-config": "workspace:*",
     "@packages/typescript-config": "workspace:*",
     "eslint": "^9.39.4",
-    "prettier": "^3.8.1",
-    "typescript": "^5.9.2"
+    "prettier": "^3.9.4",
+    "typescript": "~6.0.3"
   }
 }

@@ -16,6 +16,7 @@ dist/
 
 # typescript
 *.tsbuildinfo
+apps/mobile/src/uniwind-types.d.ts
 
 # os
 .DS_Store

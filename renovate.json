@@ -1,4 +1,65 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"]
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":preserveSemverRanges"
+  ],
+  "timezone": "America/New_York",
+  "baseBranchPatterns": ["develop"],
+  "schedule": ["before 8am on monday"],
+  "prConcurrentLimit": 5,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 8am on monday"]
+  },
+  "packageRules": [
+    {
+      "description": "Keep Expo SDK and native runtime packages together.",
+      "matchFileNames": ["apps/mobile/package.json", "package.json"],
+      "matchPackageNames": [
+        "expo",
+        "/^expo-/",
+        "/^@expo\\//",
+        "babel-preset-expo",
+        "react",
+        "react-dom",
+        "react-native",
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-screens",
+        "react-native-svg",
+        "react-native-worklets"
+      ],
+      "groupName": "expo sdk and native stack"
+    },
+    {
+      "description": "Group Next.js app and lint plugin updates.",
+      "matchPackageNames": ["next", "@next/eslint-plugin-next"],
+      "groupName": "next.js"
+    },
+    {
+      "description": "Group Tailwind and formatting tool updates.",
+      "matchPackageNames": [
+        "tailwindcss",
+        "@tailwindcss/postcss",
+        "prettier",
+        "prettier-plugin-tailwindcss",
+        "@ianvs/prettier-plugin-sort-imports"
+      ],
+      "groupName": "formatting and tailwind"
+    },
+    {
+      "description": "Group Convex packages across apps and backend.",
+      "matchPackageNames": ["convex", "convex-test"],
+      "groupName": "convex"
+    },
+    {
+      "description": "Call out majors separately for scaffold review.",
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["major-upgrade"]
+    }
+  ]
 }
