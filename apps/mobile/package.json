@@ -15,14 +15,14 @@
     "check-imports": "bun run ../../scripts/check-imports.ts",
     "clean": "rm -rf .expo .turbo node_modules",
     "rnr-add": "bunx @react-native-reusables/cli@latest add",
-    "build:ios": "eas build --platform ios --profile development --local --output dist/scaffold-dev.tar.gz",
+    "build:ios": "eas build --platform ios --profile development --local --clear-cache --output dist/scaffold-dev.tar.gz",
     "build:ios:simulator": "eas build --platform ios --profile development-simulator --local --output dist/scaffold-simulator.tar.gz",
-    "build:ios:production": "eas build --platform ios --profile production --local --output dist/scaffold.ipa",
+    "build:ios:production": "eas build --platform ios --profile production --local --non-interactive --output dist/scaffold.ipa",
     "build:android": "eas build --platform android --profile development --local --output dist/scaffold-dev.apk",
-    "build:android:production": "eas build --platform android --profile production --local --output dist/scaffold.aab",
-    "build:production": "eas build --platform all --profile production && eas submit --platform all",
-    "submit:ios": "eas submit --platform ios --no-wait",
-    "submit:android": "eas submit --platform android --no-wait"
+    "build:android:production": "eas build --platform android --profile production --local --non-interactive --output dist/scaffold.aab",
+    "build:production": "bun run build:ios:production && bun run build:android:production && bun run submit:ios && bun run submit:android",
+    "submit:ios": "eas submit --platform ios --path dist/scaffold.ipa --no-wait --non-interactive",
+    "submit:android": "eas submit --platform android --path dist/scaffold.aab --no-wait --non-interactive"
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.3",
