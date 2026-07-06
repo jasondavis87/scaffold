@@ -87,6 +87,7 @@ bun install              # Install dependencies
 bun dev                  # Start all dev servers
 bun check                # Typecheck + lint + format (auto-fix) + import checks
 bun run test             # Run Convex tests
+bun run convex:ai:update # Refresh Convex AI guidelines/skills
 bun ios                  # Start iOS simulator
 bun android              # Start Android emulator
 bun run ui-add           # Add shadcn component (web)

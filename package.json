@@ -18,6 +18,8 @@
     "ios": "cd apps/mobile && bun run ios",
     "android": "cd apps/mobile && bun run android",
     "test": "turbo test",
+    "convex:ai:status": "cd packages/backend && bunx convex ai-files status",
+    "convex:ai:update": "cd packages/backend && bunx convex ai-files update",
     "ui-add": "turbo run ui-add",
     "v0-bundle": "bash scripts/create-v0-bundle.sh"
   },

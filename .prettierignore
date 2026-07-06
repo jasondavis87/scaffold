@@ -5,3 +5,4 @@ dist
 bun.lock
 _generated
 **/convex/_generated
+apps/mobile/src/uniwind-types.d.ts

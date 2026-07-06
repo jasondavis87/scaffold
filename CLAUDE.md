@@ -41,6 +41,7 @@ A scaffold application
 - Generated projects use `feature branches -> develop -> main`.
 - `develop` is the active integration branch and should be connected to develop CI/CD.
 - `main` is production only and should be connected to production CI/CD.
+- Renovate dependency PRs target `develop`; promote to `main` only through the normal production merge.
 - There is no staging branch by default.
 - `scripts/setup.sh` resets the scaffold template history, creates a fresh initial commit on `main`, creates `develop`, and leaves the project checked out on `develop`.
 
@@ -55,6 +56,8 @@ bun ios                  # Start Expo on iOS simulator
 bun android              # Start Expo on Android emulator
 bun check                # Run typecheck + lint + format (auto-fix) + check-imports
 bun run test             # Run Convex tests (vitest) — MUST use `bun run test`, not `bun test`
+bun run convex:ai:status # Check whether Convex AI guidelines/skills are current
+bun run convex:ai:update # Refresh Convex AI guidelines/skills after Convex upgrades
 bun run ui-add           # Add shadcn component to packages/ui
 bun run v0-bundle -- landing  # Generate V0 design bundle
 ```
@@ -97,6 +100,7 @@ bun run v0-bundle -- landing  # Generate V0 design bundle
 - Use `withIndex()` for efficient queries
 - Schema defined in `packages/backend/convex/schema.ts`
 - HTTP routes in `packages/backend/convex/http.ts`
+- Keep Convex AI files current after Convex upgrades: run `bun run convex:ai:status`, then `bun run convex:ai:update` if anything is out of date.
 
 ## Adding Components
 
