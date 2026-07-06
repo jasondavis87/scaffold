@@ -7,6 +7,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./analytics": "./src/analytics.ts",
     "./types": "./src/types/index.ts",
     "./constants": "./src/constants/index.ts",
     "./schemas": "./src/schemas/index.ts",

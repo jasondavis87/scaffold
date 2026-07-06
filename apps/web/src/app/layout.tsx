@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 import "./globals.css";
@@ -20,8 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ConvexClientProvider>
-            {children}
-            <Toaster />
+            <PostHogProvider>
+              {children}
+              <Toaster />
+            </PostHogProvider>
           </ConvexClientProvider>
         </ThemeProvider>
       </body>

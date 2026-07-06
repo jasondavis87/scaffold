@@ -75,6 +75,7 @@ bun dev
 - **One app at a time** per AI session — use `git worktree` for parallelism
 - **PRD is the single source of truth** — tasks reference it, don't duplicate it
 - **Convex is the only backend** — no Next.js API routes for data operations
+- **PostHog events are typed in `@packages/shared/analytics`** — apps initialize their own SDK providers and no-op when keys are missing
 - **UniWind `className` for all mobile styling** — `style` prop only for animated values
 - **Zustand store is the only interface to device storage** — never call AsyncStorage directly
 - **Shared UI package is web-only** — mobile components live in `apps/mobile/src/components/ui/`
@@ -93,6 +94,24 @@ bun android              # Start Android emulator
 bun run ui-add           # Add shadcn component (web)
 bun run v0-bundle -- web # Generate V0 bundle
 ```
+
+## Analytics
+
+PostHog is wired for landing, web, and mobile with shared event names and property types in `@packages/shared/analytics`.
+
+Set these when you want telemetry enabled:
+
+```bash
+# apps/web and apps/landing
+NEXT_PUBLIC_POSTHOG_KEY=
+NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+
+# apps/mobile
+EXPO_PUBLIC_POSTHOG_KEY=
+EXPO_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+```
+
+Without keys, analytics providers render normally and tracking calls are no-ops.
 
 ## Inspiration
 

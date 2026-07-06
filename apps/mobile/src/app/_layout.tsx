@@ -8,6 +8,8 @@ import { StatusBar } from "expo-status-bar";
 import { AnimatedIcon } from "@/components/animated-icon";
 import { AppTabs } from "@/components/app-tabs";
 import { ConvexClientProvider } from "@/components/providers/ConvexProvider";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
+import { ScreenTrackingProvider } from "@/components/providers/ScreenTrackingProvider";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import { View } from "@/lib/react-native";
 import { usePreferencesStore } from "@/stores/preferences";
@@ -34,11 +36,15 @@ export default function RootLayout() {
   }
 
   return (
-    <ConvexClientProvider>
-      <AccessibilityProvider>
-        <AppTabs />
-        <StatusBar style="auto" />
-      </AccessibilityProvider>
-    </ConvexClientProvider>
+    <PostHogProvider>
+      <ConvexClientProvider>
+        <AccessibilityProvider>
+          <ScreenTrackingProvider>
+            <AppTabs />
+            <StatusBar style="auto" />
+          </ScreenTrackingProvider>
+        </AccessibilityProvider>
+      </ConvexClientProvider>
+    </PostHogProvider>
   );
 }

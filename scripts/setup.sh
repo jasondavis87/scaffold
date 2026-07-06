@@ -71,6 +71,12 @@ replace_regex_in_file() {
 # Replace default project name
 replace_in_project '"scaffold"' "\"${PROJECT_NAME}\""
 
+# Replace PostHog site identifiers
+replace_in_project "scaffold.web" "${PROJECT_NAME}.web"
+replace_in_project "scaffold.landing" "${PROJECT_NAME}.landing"
+replace_in_project "scaffold.mobile" "${PROJECT_NAME}.mobile"
+replace_in_project 'scaffold.${AppName}' "${PROJECT_NAME}.\${AppName}"
+
 # Replace "A scaffold application" description
 replace_in_project "A scaffold application" "$PROJECT_DESCRIPTION"
 
