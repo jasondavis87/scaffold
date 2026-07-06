@@ -48,42 +48,62 @@ BUNDLE_ID="com.${PROJECT_NAME}.app"
 
 FIND_ARGS='-type f \( -name "*.json" -o -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.mjs" -o -name "*.md" -o -name "*.css" -o -name "*.yml" \) -not -path "*/node_modules/*" -not -path "*/.git/*" -not -path "*/_generated/*" -not -path "*/.agents/*"'
 
+replace_in_project() {
+  local search="$1"
+  local replacement="$2"
+  eval "find . $FIND_ARGS -print0" | SEARCH="$search" REPLACEMENT="$replacement" xargs -0 perl -0pi -e 's/\Q$ENV{SEARCH}\E/$ENV{REPLACEMENT}/g'
+}
+
+replace_in_file() {
+  local search="$1"
+  local replacement="$2"
+  local file="$3"
+  SEARCH="$search" REPLACEMENT="$replacement" perl -0pi -e 's/\Q$ENV{SEARCH}\E/$ENV{REPLACEMENT}/g' "$file" 2>/dev/null || true
+}
+
+replace_regex_in_file() {
+  local search="$1"
+  local replacement="$2"
+  local file="$3"
+  SEARCH="$search" REPLACEMENT="$replacement" perl -0pi -e 's/$ENV{SEARCH}/$ENV{REPLACEMENT}/g' "$file" 2>/dev/null || true
+}
+
 # Replace default project name
-eval "find . $FIND_ARGS -exec sed -i '' 's/\"scaffold\"/\"${PROJECT_NAME}\"/g' {} +"
+replace_in_project '"scaffold"' "\"${PROJECT_NAME}\""
 
 # Replace "A scaffold application" description
-eval "find . $FIND_ARGS -exec sed -i '' 's/A scaffold application/${PROJECT_DESCRIPTION}/g' {} +"
+replace_in_project "A scaffold application" "$PROJECT_DESCRIPTION"
 
 # Replace bundle ID
-eval "find . $FIND_ARGS -exec sed -i '' 's/com\.scaffold\.app/${BUNDLE_ID}/g' {} +"
+replace_in_project "com.scaffold.app" "$BUNDLE_ID"
 
 # Replace scheme (in app.json specifically)
-sed -i '' "s/\"scheme\": \"scaffold\"/\"scheme\": \"${SCHEME}\"/" apps/mobile/app.json 2>/dev/null || true
+replace_in_file '"scheme": "scaffold"' "\"scheme\": \"${SCHEME}\"" apps/mobile/app.json
 
 # Replace in EAS build output paths
-sed -i '' "s/dist\/scaffold/dist\/${PROJECT_NAME}/g" apps/mobile/package.json 2>/dev/null || true
+replace_in_file "dist/scaffold" "dist/${PROJECT_NAME}" apps/mobile/package.json
 
 # Update TASK-PROMPT.md placeholders
 if [ -f "instructions/TASK-PROMPT.md" ]; then
-  sed -i '' "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" instructions/TASK-PROMPT.md
+  replace_in_file "{{PROJECT_NAME}}" "$PROJECT_NAME" instructions/TASK-PROMPT.md
   if [ -n "$PROJECT_URL" ]; then
-    sed -i '' "s/{{PROJECT_URL}}/ (${PROJECT_URL})/g" instructions/TASK-PROMPT.md
+    replace_in_file "{{PROJECT_URL}}" " (${PROJECT_URL})" instructions/TASK-PROMPT.md
   else
-    sed -i '' "s/{{PROJECT_URL}}//g" instructions/TASK-PROMPT.md
+    replace_in_file "{{PROJECT_URL}}" "" instructions/TASK-PROMPT.md
   fi
-  sed -i '' "s/{{PROJECT_DESCRIPTION}}/${PROJECT_DESCRIPTION}/g" instructions/TASK-PROMPT.md
+  replace_in_file "{{PROJECT_DESCRIPTION}}" "$PROJECT_DESCRIPTION" instructions/TASK-PROMPT.md
   PROJECT_ROOT=$(pwd)
-  sed -i '' "s|{{PROJECT_ROOT}}|${PROJECT_ROOT}|g" instructions/TASK-PROMPT.md
+  replace_in_file "{{PROJECT_ROOT}}" "$PROJECT_ROOT" instructions/TASK-PROMPT.md
 fi
 
 # Remove mobile app if not included
 if [ "$INCLUDE_MOBILE" != "y" ] && [ "$INCLUDE_MOBILE" != "Y" ]; then
   echo "Removing mobile app..."
   rm -rf apps/mobile
-  sed -i '' '/"ios":/d' package.json
-  sed -i '' '/"android":/d' package.json
+  replace_regex_in_file '^.*"ios":.*\n' "" package.json
+  replace_regex_in_file '^.*"android":.*\n' "" package.json
   rm -f tooling/eslint/expo.js
-  sed -i '' '/"\.\/expo"/d' tooling/eslint/package.json
+  replace_regex_in_file '^.*"\./expo".*\n' "" tooling/eslint/package.json
 fi
 
 # Remove web dashboard if not included
@@ -105,13 +125,13 @@ if [ -d "apps/mobile" ]; then
 
   EXPO_VERSIONS=$(bunx expo install --check 2>&1 || true)
 
-  for pkg in react react-dom react-native; do
+  for pkg in react react-dom react-native typescript; do
     EXPECTED=$(echo "$EXPO_VERSIONS" | grep "^  ${pkg}@" | sed -E 's/.*expected version: ([^ ]+)/\1/' | head -1)
     if [ -n "$EXPECTED" ] && [ "$EXPECTED" != "" ]; then
       CLEAN_VERSION=$(echo "$EXPECTED" | sed 's/^[~^]//')
       echo "  Pinning $pkg to $CLEAN_VERSION (Expo expected)"
       cd ../..
-      sed -i '' "s/\"${pkg}\": \"[^\"]*\"/\"${pkg}\": \"${CLEAN_VERSION}\"/" package.json
+      replace_regex_in_file "\"${pkg}\": \"[^\"]*\"" "\"${pkg}\": \"${CLEAN_VERSION}\"" package.json
       cd apps/mobile
     fi
   done
@@ -262,17 +282,39 @@ if [ "$INCLUDE_AUTH" = "y" ] || [ "$INCLUDE_AUTH" = "Y" ]; then
 fi
 
 # ──────────────────────────────────────────────
-# Git remote
+# Git history and remote
 # ──────────────────────────────────────────────
 
-# Remove template origin to prevent accidental pushes
-if git remote | grep -q origin; then
-  git remote remove origin
-  echo "Removed template 'origin' remote."
+read -p "Git remote URL (optional, press Enter to skip): " GIT_REMOTE
+
+echo ""
+echo "Resetting template git history..."
+
+if [ -d ".git" ]; then
+  rm -rf .git
+  echo "Removed scaffold template git history."
 fi
 
-# Optionally set new remote
-read -p "Git remote URL (optional, press Enter to skip): " GIT_REMOTE
+git init -b main
+git add .
+
+if git diff --cached --quiet; then
+  echo "No files to commit in the new repository."
+else
+  if git config user.name >/dev/null && git config user.email >/dev/null; then
+    git commit -m "Initial commit"
+  else
+    git -c user.name="Scaffold Setup" -c user.email="scaffold@example.invalid" commit -m "Initial commit"
+    echo "Used a temporary git identity for the initial commit. Update git author config when you're ready."
+  fi
+fi
+
+if ! git show-ref --verify --quiet refs/heads/develop; then
+  git branch develop
+fi
+git checkout develop
+echo "Created fresh git history and switched to develop."
+
 if [ -n "$GIT_REMOTE" ]; then
   git remote add origin "$GIT_REMOTE"
   echo "Set origin to $GIT_REMOTE"

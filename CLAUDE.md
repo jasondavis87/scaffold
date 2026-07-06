@@ -6,7 +6,7 @@ A scaffold application
 
 ```
 ├── apps/
-│   ├── mobile/         # Expo SDK 55 + expo-router + UniWind
+│   ├── mobile/         # Expo SDK 57 + expo-router + UniWind
 │   ├── landing/        # Next.js 16 marketing/landing site
 │   └── web/            # Next.js 16 web app (dashboard)
 ├── packages/
@@ -28,13 +28,21 @@ A scaffold application
 
 | Layer | Technology |
 |-------|-----------|
-| Mobile | Expo SDK 55, expo-router, UniWind, React Native Reusables |
+| Mobile | Expo SDK 57, expo-router, UniWind, React Native Reusables |
 | Web | Next.js 16, Tailwind CSS v4, shadcn/ui (Base UI) |
 | Backend | Convex (realtime, serverless) |
 | Package Manager | Bun |
 | Monorepo | Turborepo |
 | Testing | Vitest + convex-test |
 | State (mobile) | Zustand + AsyncStorage (persisted) |
+
+## Git Branching
+
+- Generated projects use `feature branches -> develop -> main`.
+- `develop` is the active integration branch and should be connected to develop CI/CD.
+- `main` is production only and should be connected to production CI/CD.
+- There is no staging branch by default.
+- `scripts/setup.sh` resets the scaffold template history, creates a fresh initial commit on `main`, creates `develop`, and leaves the project checked out on `develop`.
 
 ## Key Commands
 
@@ -62,6 +70,7 @@ bun run v0-bundle -- landing  # Generate V0 design bundle
 7. **Zustand store is the ONLY interface to AsyncStorage** — components never call AsyncStorage or SecureStore directly. Use `usePreferencesStore`.
 8. **Work on ONE app at a time** — use `git worktree` for parallelism across apps in separate AI sessions.
 9. **PRD is the single source of truth** — tasks reference the PRD, don't duplicate spec content. If a decision deviates from the PRD, record it in `instructions/DECISIONS.md`. Entries there supersede the PRD.
+10. **Reanimated v4 uses Worklets** — keep `react-native-worklets` installed and use `react-native-worklets/plugin` as the final Babel plugin.
 
 ## Do NOT
 

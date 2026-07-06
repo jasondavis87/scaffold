@@ -25,7 +25,7 @@ Built for developers who use **Claude Code**, **TaskMaster AI**, **Convex**, **E
 
 | Layer | Technology |
 |-------|-----------|
-| Mobile | Expo SDK 55, expo-router, UniWind, React Native Reusables |
+| Mobile | Expo SDK 57, expo-router, UniWind, React Native Reusables |
 | Web | Next.js 16, Tailwind CSS v4, shadcn/ui (Base UI) |
 | Backend | Convex |
 | Package Manager | Bun |
@@ -38,7 +38,7 @@ Built for developers who use **Claude Code**, **TaskMaster AI**, **Convex**, **E
 
 ```
 ├── apps/
-│   ├── mobile/         # Expo SDK 55 + expo-router + UniWind
+│   ├── mobile/         # Expo SDK 57 + expo-router + UniWind
 │   ├── landing/        # Next.js marketing/landing site
 │   └── web/            # Next.js web app (dashboard)
 ├── packages/
@@ -61,6 +61,8 @@ cd my-app
 # Setup (renames packages, toggles features)
 bash scripts/setup.sh
 
+# After setup, the generated project has fresh git history and starts on develop
+
 # Start Convex
 cd packages/backend && bunx convex dev
 
@@ -76,14 +78,15 @@ bun dev
 - **UniWind `className` for all mobile styling** — `style` prop only for animated values
 - **Zustand store is the only interface to device storage** — never call AsyncStorage directly
 - **Shared UI package is web-only** — mobile components live in `apps/mobile/src/components/ui/`
+- **Branch flow is feature branches -> develop -> main** — develop is integration, main is production
 
 ## Commands
 
 ```bash
 bun install              # Install dependencies
 bun dev                  # Start all dev servers
-bun check                # Typecheck + lint + format (auto-fix)
-bun test                 # Run Convex tests
+bun check                # Typecheck + lint + format (auto-fix) + import checks
+bun run test             # Run Convex tests
 bun ios                  # Start iOS simulator
 bun android              # Start Android emulator
 bun run ui-add           # Add shadcn component (web)

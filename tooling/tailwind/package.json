@@ -8,6 +8,6 @@
     "./native": "./native.ts"
   },
   "devDependencies": {
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.3.2"
   }
 }
