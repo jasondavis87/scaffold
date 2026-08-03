@@ -70,6 +70,8 @@ cd packages/backend && bunx convex dev
 bun dev
 ```
 
+Generated projects ship `.github/workflows/claude-review.yml` and `claude.yml`, which review every PR and answer `@claude` mentions. Both read the `CLAUDE_CODE_OAUTH_TOKEN` repo secret, so run `/install-github-app` in Claude Code once on the new repo to set it. GitHub Actions secrets are per-repository, so this is a step for every project, not a one-time setup. Use `/install-github-app` rather than `claude setup-token`, and never `ANTHROPIC_API_KEY` — that bills API credit instead of your subscription. Until the secret exists the review job fails on every PR by design; that is the reminder, not a broken workflow.
+
 ## Key Principles
 
 - **One app at a time** per AI session — use `git worktree` for parallelism

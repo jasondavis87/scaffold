@@ -48,6 +48,12 @@ A scaffold application
 - There is no `develop` or staging branch. Renovate PRs target `main`.
 - `scripts/setup.sh` resets the scaffold template history and leaves the
   project on `main` with a fresh initial commit.
+- `.github/workflows/claude-review.yml` and `claude.yml` need the
+  `CLAUDE_CODE_OAUTH_TOKEN` repo secret. Actions secrets are per-repository,
+  so set it once on every new project by running `/install-github-app` in
+  Claude Code. Never `claude setup-token`, and never `ANTHROPIC_API_KEY`,
+  which bills API credit instead of the subscription. Until the secret
+  exists the review fails on every PR, which is deliberate.
 
 ## Key Commands
 
