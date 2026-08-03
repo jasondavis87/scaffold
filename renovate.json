@@ -7,7 +7,6 @@
     ":preserveSemverRanges"
   ],
   "timezone": "America/New_York",
-  "baseBranchPatterns": ["develop"],
   "schedule": ["before 8am on monday"],
   "prConcurrentLimit": 5,
   "lockFileMaintenance": {

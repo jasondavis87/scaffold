@@ -315,11 +315,7 @@ else
   fi
 fi
 
-if ! git show-ref --verify --quiet refs/heads/develop; then
-  git branch develop
-fi
-git checkout develop
-echo "Created fresh git history and switched to develop."
+echo "Created fresh git history on main."
 
 if [ -n "$GIT_REMOTE" ]; then
   git remote add origin "$GIT_REMOTE"
