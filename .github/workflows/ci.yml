@@ -6,11 +6,13 @@ on:
   pull_request:
     branches: [main]
 
-# Supersede an in-flight PR run when the branch is pushed again. Runs on main
-# are never cancelled, so every trunk commit keeps a complete CI record.
+# Supersede an in-flight PR run when the branch is pushed again. head_ref is
+# only defined for pull_request, so pushes to main fall back to the unique
+# run_id and land in a group of their own: never cancelled, never queued
+# behind each other.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
