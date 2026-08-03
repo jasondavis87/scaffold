@@ -52,14 +52,14 @@ The reviewer's mandate:
 > 1. The task details (read from Taskmaster)
 > 2. The PRD section relevant to this task (`.taskmaster/docs/prd.txt`)
 > 3. The git diff of all changes made for this task (`git diff HEAD~1` or appropriate range)
-> 4. The project conventions in `CLAUDE.md`
+> 4. The project conventions in `AGENTS.md`
 > 5. Any relevant entries in `instructions/DECISIONS.md`
 >
 > **Review Checklist:**
 >
 > 1. **Correctness** — Does the code do what the task specifies? Trace the task's acceptance criteria through the implementation.
 > 2. **PRD Compliance** — Does the implementation match what the PRD specifies for this feature? Check data models, API contracts, business rules, and naming against the PRD. Check DECISIONS.md for authorized deviations. Flag unauthorized deviations.
-> 3. **Architectural Rules** — Does it follow CLAUDE.md rules? (Convex-only backend, Bun only, no banned packages, etc.)
+> 3. **Architectural Rules** — Does it follow AGENTS.md rules? (Convex-only backend, Bun only, no banned packages, etc.)
 > 4. **Edge Cases** — For each requirement in this task, what's the unhappy path? Is it handled? Check boundary conditions and validation.
 > 5. **Security** — No prompt injection vectors, user content treated as untrusted, no OWASP top 10 issues.
 > 6. **Integration** — Will this break existing code? Are imports correct? Are types consistent with shared packages?
@@ -78,7 +78,7 @@ The reviewer's mandate:
 > - **Severity**: Critical | High | Medium | Low
 > - **File(s)**: path:line_number
 > - **Issue**: What's wrong
-> - **Expected**: What the PRD/task/CLAUDE.md says should happen
+> - **Expected**: What the PRD/task/AGENTS.md says should happen
 > - **Actual**: What the code does
 > - **Fix**: Concrete suggestion
 >

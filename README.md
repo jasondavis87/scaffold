@@ -61,7 +61,7 @@ cd my-app
 # Setup (renames packages, toggles features)
 bash scripts/setup.sh
 
-# After setup, the generated project has fresh git history and starts on develop
+# After setup, the generated project has fresh git history on main
 
 # Start Convex
 cd packages/backend && bunx convex dev
@@ -79,7 +79,7 @@ bun dev
 - **UniWind `className` for all mobile styling** — `style` prop only for animated values
 - **Zustand store is the only interface to device storage** — never call AsyncStorage directly
 - **Shared UI package is web-only** — mobile components live in `apps/mobile/src/components/ui/`
-- **Branch flow is feature branches -> develop -> main** — develop is integration, main is production
+- **GitHub Flow** — `main` is the trunk and always deployable; feature branches PR into `main`; store releases are tags (see AGENTS.md)
 
 ## Commands
 
