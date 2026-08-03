@@ -74,27 +74,22 @@ bun run v0-bundle -- landing  # Generate V0 design bundle
 
 ## Architectural Rules
 
-1. **Convex is the ONLY backend** — no Next.js API routes for data. All mutations/queries go through Convex functions.
+1. **Convex is the ONLY backend** — never create Next.js API routes for data operations. All mutations/queries go through Convex functions.
 2. **Bun is the ONLY package manager** — never use npm, yarn, or pnpm.
 3. **UniWind for mobile styling (NOT NativeWind)** — use `className` for all static styles. Use `style` prop ONLY for animated shared values (Reanimated).
-4. **Never import RN primitives directly** — import `Text`, `View`, etc. from `@/lib/react-native` or `@/components/ui/*`, NOT from `react-native`. ESLint enforces this.
+4. **Never import RN primitives directly** — import `Text`, `View`, etc. from `@/lib/react-native` or `@/components/ui/*`, NOT from `react-native`. The only files exempt are `src/components/ui/` and `src/lib/react-native.tsx`. ESLint enforces this.
 5. **Shared UI (`packages/ui`) is web-only** — mobile components live in `apps/mobile/src/components/ui/`.
 6. **Validate with Zod** — all external data (API responses, form inputs) validated with Zod schemas from `@packages/shared`.
 7. **Zustand store is the ONLY interface to AsyncStorage** — components never call AsyncStorage or SecureStore directly. Use `usePreferencesStore`.
 8. **Work on ONE app at a time** — use `git worktree` for parallelism across apps in separate AI sessions.
-9. **PRD is the single source of truth** — tasks reference the PRD, don't duplicate spec content. If a decision deviates from the PRD, record it in `instructions/DECISIONS.md`. Entries there supersede the PRD.
+9. **PRD is the single source of truth** — task descriptions reference the PRD, they never duplicate spec content. If a decision deviates from the PRD, record it in `instructions/DECISIONS.md`. Entries there supersede the PRD.
 10. **Reanimated v4 uses Worklets** — keep `react-native-worklets` installed and use `react-native-worklets/plugin` as the final Babel plugin.
 
-## Do NOT
+## Never Run `bun test`
 
-- Run `bun test` — it invokes Bun's built-in test runner, which does not support Vitest. Always use `bun run test` instead.
-- Use `npm`, `yarn`, or `pnpm`
-- Create Next.js API routes for data operations (use Convex)
-- Import from `react-native` directly in mobile app code (except in `src/components/ui/` and `src/lib/react-native.tsx`)
-- Use NativeWind — this project uses UniWind
-- Use `style` prop for static styles on mobile — use `className`
-- Call AsyncStorage directly — use the Zustand preferences store
-- Duplicate PRD content in task descriptions
+`bun test` invokes Bun's built-in test runner, which does not support Vitest.
+Always run `bun run test` instead. This is the one command in this repo where
+the obvious form is the wrong one, so it is worth memorizing.
 
 ## Source of Truth
 
