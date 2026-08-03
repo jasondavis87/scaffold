@@ -7,6 +7,13 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+# Only ever review the newest commit on a branch. A superseded review is both
+# wrong (it describes code that moved) and expensive, since every run draws on
+# the Claude subscription behind CLAUDE_CODE_OAUTH_TOKEN.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   review:
     runs-on: ubuntu-latest
