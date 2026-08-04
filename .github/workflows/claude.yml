@@ -10,6 +10,13 @@ on:
   pull_request_review:
     types: [submitted]
 
+# Serialize per thread: a second @claude mention on the same issue or PR queues
+# behind the first instead of cancelling it. Unlike the review workflow, these
+# runs are user-requested and may be mid-task, so cancelling loses real work.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
 jobs:
   claude:
     if: |
@@ -19,9 +26,15 @@ jobs:
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: ubuntu-latest
     permissions:
+      # contents stays read DELIBERATELY: @claude can answer, review and read CI
+      # results, but cannot push commits. Granting contents: write is a separate
+      # decision, not something to slip in with a permissions fix.
       contents: read
-      pull-requests: read
-      issues: read
+      # write, not read: the action posts its reply through GITHUB_TOKEN, so read
+      # produces a run that executes the model in full and then silently fails the
+      # comment call while still reporting success.
+      pull-requests: write
+      issues: write
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
