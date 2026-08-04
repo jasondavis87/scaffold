@@ -3,9 +3,14 @@ name: Claude Review
 # Reviews every PR automatically on open and on each new push.
 # This repo is a scaffold template, so review weighs template correctness
 # (what generated projects inherit) as heavily as the diff itself.
+#
+# Keep all four event types. `ready_for_review` and `reopened` do NOT emit a
+# `synchronize`, so without them a draft PR promoted to ready, or a closed PR
+# that gets reopened, is never reviewed — and the check still reports green,
+# which reads as "reviewed, nothing found".
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, ready_for_review, reopened]
 
 # Only ever review the newest commit on a branch. A superseded review is both
 # wrong (it describes code that moved) and expensive, since every run draws on
