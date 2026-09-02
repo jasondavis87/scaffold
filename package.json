@@ -8,7 +8,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "check": "turbo typecheck lint format check-imports && bun run check-tokens",
-    "check:ci": "turbo typecheck lint format:check check-imports && bun run check-tokens",
+    "check:ci": "turbo typecheck lint format:check check-imports && turbo test --concurrency=1 && bun run check-tokens",
     "typecheck": "turbo typecheck",
     "lint": "turbo lint",
     "format": "turbo format",

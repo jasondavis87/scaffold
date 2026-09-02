@@ -64,7 +64,8 @@ bun dev --filter=landing # Start only landing site (port 3000)
 bun dev --filter=web     # Start only web app (port 3001)
 bun ios                  # Start Expo on iOS simulator
 bun android              # Start Expo on Android emulator
-bun check                # Run typecheck + lint + format (auto-fix) + check-imports
+bun check                # Run typecheck + lint + format (auto-fix) + check-imports + token sync
+bun run check:ci         # Run CI-safe checks (format:check, tests, and token sync)
 bun run test             # Run Convex tests (vitest) — MUST use `bun run test`, not `bun test`
 bun run convex:ai:status # Check whether Convex AI guidelines/skills are current
 bun run convex:ai:update # Refresh Convex AI guidelines/skills after Convex upgrades
