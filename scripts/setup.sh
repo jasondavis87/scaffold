@@ -109,8 +109,8 @@ if [ "$INCLUDE_MOBILE" != "y" ] && [ "$INCLUDE_MOBILE" != "Y" ]; then
   replace_regex_in_file '^.*"ios":.*\n' "" package.json
   replace_regex_in_file '^.*"android":.*\n' "" package.json
   rm -f tooling/eslint/expo.js
-  replace_in_file '    "./nextjs.js",\n  }' '    "./nextjs.js"\n  }' tooling/eslint/package.json
   replace_regex_in_file '^.*"\./expo".*\n' "" tooling/eslint/package.json
+  replace_regex_in_file ',\n  }' '\n  }' tooling/eslint/package.json
 fi
 
 # Remove web dashboard if not included
