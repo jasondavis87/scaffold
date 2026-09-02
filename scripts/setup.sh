@@ -65,7 +65,7 @@ replace_regex_in_file() {
   local search="$1"
   local replacement="$2"
   local file="$3"
-  SEARCH="$search" REPLACEMENT="$replacement" perl -0pi -e 's/$ENV{SEARCH}/$ENV{REPLACEMENT}/g' "$file" 2>/dev/null || true
+  SEARCH="$search" REPLACEMENT="$replacement" perl -0pi -e 's/$ENV{SEARCH}/$ENV{REPLACEMENT}/gm' "$file" 2>/dev/null || true
 }
 
 # Replace default project name
