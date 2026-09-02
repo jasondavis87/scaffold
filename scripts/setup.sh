@@ -65,7 +65,7 @@ replace_regex_in_file() {
   local search="$1"
   local replacement="$2"
   local file="$3"
-  SEARCH="$search" REPLACEMENT="$replacement" perl -0pi -e 's/$ENV{SEARCH}/$ENV{REPLACEMENT}/g' "$file" 2>/dev/null || true
+  SEARCH="$search" REPLACEMENT="$replacement" perl -0pi -e 's/$ENV{SEARCH}/$ENV{REPLACEMENT}/gm' "$file" 2>/dev/null || true
 }
 
 # Replace default project name
@@ -110,6 +110,7 @@ if [ "$INCLUDE_MOBILE" != "y" ] && [ "$INCLUDE_MOBILE" != "Y" ]; then
   replace_regex_in_file '^.*"android":.*\n' "" package.json
   rm -f tooling/eslint/expo.js
   replace_regex_in_file '^.*"\./expo".*\n' "" tooling/eslint/package.json
+  replace_regex_in_file ',\n  }' $'\n  }' tooling/eslint/package.json
 fi
 
 # Remove web dashboard if not included
